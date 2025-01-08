@@ -56,7 +56,7 @@ export async function GET(request: Request) {
     } catch (error) {
         console.log('error geting messages==>', error)
         return Response.json({
-            success: true,
+            success: false,
             message: "Internal server error",
         }, {
             status: 500

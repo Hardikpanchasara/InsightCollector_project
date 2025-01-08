@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     } catch (error) {
         console.log('error adding message==>', error)
         return Response.json({
-            success: true,
+            success: false,
             message: "Internal server error",
         }, {
             status: 500
