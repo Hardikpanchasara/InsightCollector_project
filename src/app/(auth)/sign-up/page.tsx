@@ -9,7 +9,6 @@ import { useDebounceCallback } from 'usehooks-ts'
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { signUpSchema } from "@/schemas/signUpSchema"
-import Email from "next-auth/providers/email"
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from "@/types/ApiResponse"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -18,7 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 
 
-const page = () => {
+const SignUpForm = () => {
     const [username, setUsername] = useState('')
     const [usernameMessage, setUsernameMessage] = useState('')
     const [isCheckingUsername, setIsCheckingUsername] = useState(false)
@@ -103,8 +102,7 @@ const page = () => {
                                     <FormControl>
                                         <Input placeholder="username" {...field} onChange={(e) => { field.onChange(e); debounced(e.target.value) }} />
                                     </FormControl>
-                                    {isCheckingUsername && <Loader2 className="animate-spin" />}
-                                    <p className={`text-sm ${usernameMessage === "Username is available" ? 'text-green-500' : 'text-red-500'}`} > test {usernameMessage}</p>
+                                    <p className={`text-sm ${usernameMessage === "Username is available" ? 'text-green-500' : 'text-red-500'}`} > {isCheckingUsername && <Loader2 className="animate-spin" />} {usernameMessage}</p>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -141,7 +139,7 @@ const page = () => {
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
                                     </>
-                                ) : ('Signup')
+                                ) : ('Sign up')
                             }
                         </Button>
                     </form>
@@ -158,4 +156,4 @@ const page = () => {
     )
 }
 
-export default page
+export default SignUpForm
