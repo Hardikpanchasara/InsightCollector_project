@@ -36,7 +36,8 @@ const SignInForm = () => {
       const response = await signIn('credentials', {
         redirect: false,
         identifier : data.identifier,
-        password: data.password
+        password: data.password,
+        // callbackUrl: '/dashboard'
       })
 
       if(response?.error){

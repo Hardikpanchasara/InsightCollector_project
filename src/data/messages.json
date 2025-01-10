@@ -1,0 +1,17 @@
+[
+    {
+        "title": "Feedback from John",
+        "content": "I really enjoy using this app. The interface is clean and easy to navigate!",
+        "received": "10 min ago"
+    },
+    {
+        "title": "Feedback from Emily",
+        "content": "It would be great. Overall, a fantastic experience!",
+        "received": "25 min ago"
+    },
+    {
+        "title": "Feedback from Michael",
+        "content": "Could you please look into it?",
+        "received": "1 hour ago"
+    }
+]
