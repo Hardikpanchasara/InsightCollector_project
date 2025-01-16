@@ -4,9 +4,12 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { User } from 'next-auth'
 import { Button } from './ui/button'
+import { Skeleton } from "@/components/ui/skeleton"
 
 const Navbar = () => {
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
+
+    console.log('session===>', session, status)
     const user: User = session?.user as User
 
     return (
@@ -14,18 +17,26 @@ const Navbar = () => {
             <div className='container mx-auto flex flex-col gap-3 md:flex-row justify-between items-center'>
                 <a className='text-xl font-bold ' href="#">Insight Collector</a>
                 {
-                    session ? (
+                    status == "loading" ? (
                         <>
-                            <span className=''>Welcome, {user?.username || user?.email} </span>
-                            <Button className='w-full md:w-auto' onClick={() => signOut()}>Logout</Button>
+                            <Skeleton className="h-[20px] w-[150px] " />
+                            <Skeleton className="h-[40px] w-[75px] " />
                         </>
-                    ) : (
-                        <Link href="/sign-in">
-                            <Button className='w-full md:w-auto'>
-                                Sign in
-                            </Button>
-                        </Link>
-                    )
+                    ) :
+                        session ? (
+                            <>
+                                <Link href="/sign-in">
+                                    <span className=''>Welcome, {user?.username || user?.email} </span>
+                                </Link>
+                                <Button className='w-full md:w-auto' onClick={() => signOut()}>Logout</Button>
+                            </>
+                        ) : (
+                            <Link href="/sign-in">
+                                <Button className='w-full md:w-auto'>
+                                    Sign in
+                                </Button>
+                            </Link>
+                        )
                 }
             </div>
         </nav>
