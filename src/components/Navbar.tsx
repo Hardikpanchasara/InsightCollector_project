@@ -15,7 +15,7 @@ const Navbar = () => {
     return (
         <nav className='p-4 md:p-6 shadow-md'>
             <div className='container mx-auto flex flex-col gap-3 md:flex-row justify-between items-center'>
-                <a className='text-xl font-bold ' href="#">Insight Collector</a>
+                <Link className='text-xl font-bold' href="/">Insight Collector</Link>
                 {
                     status == "loading" ? (
                         <>

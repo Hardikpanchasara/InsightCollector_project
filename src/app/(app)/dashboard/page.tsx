@@ -3,6 +3,7 @@
 import MessageCard from "@/components/MessageCard"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/hooks/use-toast"
 import { Message, User } from "@/model/User"
@@ -25,7 +26,7 @@ const Dashboard = () => {
         setMessages(messages.filter((message) => message._id !== messageId))
     }
 
-    const { data: session } = useSession()
+    const { data: session, status } = useSession()
 
     const form = useForm({
         resolver: zodResolver(acceptMessageSchema)
@@ -103,6 +104,41 @@ const Dashboard = () => {
         }
     }
 
+    if (!session || !session.user) {
+        return <div>{status == "loading" ?
+            <div className="my-8 mx-auto p-6 bg-white rounded w-full max-w-6xl" >
+                <Skeleton className="h-[40px] w-[75px] mb-4" />
+
+
+                <div className="mb-4" >
+                    <Skeleton className="h-[28px] w-[75px] mb-2" />
+                    <div className="flex items-center" >
+                        <Skeleton className="h-[40px] w-full mr-2" />
+                        <Skeleton className="h-[40px] w-[64px]" />
+                    </div>
+                </div>
+
+                <div className="mb-4 flex items-center" >
+                    <Skeleton className="h-[24px] w-[44px] rounded-2xl" />
+                    <Skeleton className="h-[24px] w-[150px] ml-4" />
+                </div>
+                <Separator />
+
+                <Skeleton className="h-[40px] w-[50px] mt-4" />
+
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6" >
+                    {[...Array(2)].map((message, index) => (
+                        <Skeleton key={index} className="h-[124px] w-[550px]" />
+                    ))}
+                </div>
+            </div>
+            :
+            <div>
+                Please login
+            </div>
+        }</div>
+    }
+
     const { username } = session?.user as User
 
     const baseUrl = `${window.location.protocol}//${window.location.host}`
@@ -114,10 +150,6 @@ const Dashboard = () => {
             title: "URL copied",
             description: "Profile URL has been copied to clipboard"
         })
-    }
-
-    if (!session || !session.user) {
-        return <div>Please login</div>
     }
 
     return (
@@ -137,14 +169,14 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <div className="mb-4" >
+            <div className="mb-4 flex items-center" >
                 <Switch
                     {...register('acceptMessages')}
                     checked={acceptMessages}
                     onCheckedChange={handleSwitchChange}
                     disabled={isSwitchLoading}
                 />
-                <span className="ml-2">
+                <span className="ml-4">
                     Accept Messages: {acceptMessages ? "On" : "Off"}
                 </span>
             </div>
