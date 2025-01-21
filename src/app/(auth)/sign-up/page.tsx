@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import Link from "next/link"
-import { useEffect, useState } from "react"
-import { useDebounceCallback } from 'usehooks-ts'
+import { useEffect, useRef, useState } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import { signUpSchema } from "@/schemas/signUpSchema"
@@ -23,9 +22,9 @@ const SignUpForm = () => {
     const [isCheckingUsername, setIsCheckingUsername] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const debounced = useDebounceCallback(setUsername, 300)
     const { toast } = useToast()
     const router = useRouter()
+    const debounceTimer = useRef<NodeJS.Timeout | null>(null)
 
     // zod implementation
     const form = useForm<z.infer<typeof signUpSchema>>({
@@ -37,24 +36,34 @@ const SignUpForm = () => {
         }
     })
 
-    useEffect(() => {
-        const checkUSernameUnique = async () => {
-            if (username) {
-                setIsCheckingUsername(true)
-                setUsernameMessage('')
-                try {
-                    const response = await axios.get(`/api/check-username-unique?username=${username}`)
-                    setUsernameMessage(response?.data?.message)
-                } catch (error) {
-                    const axiosError = error as AxiosError<ApiResponse>;
-                    setUsernameMessage(axiosError?.response?.data?.message ?? "Error checking username")
-                } finally {
-                    setIsCheckingUsername(false)
-                }
-            }
+    const checkUsernameUnique = async (username: string) => {
+        if (!username) return; // No need to check for empty username
+
+        setIsCheckingUsername(true)
+        setUsernameMessage('')
+
+        try {
+            const response = await axios.get(`/api/check-username-unique?username=${username}`)
+            setUsernameMessage(response?.data?.message)
+        } catch (error) {
+            const axiosError = error as AxiosError<ApiResponse>
+            setUsernameMessage(axiosError?.response?.data?.message ?? "Error checking username")
+        } finally {
+            setIsCheckingUsername(false)
         }
-        checkUSernameUnique()
-    }, [username])
+    }
+
+    const handleUsernameChange = (value: string) => {
+        setUsername(value)
+
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current) // Clear the previous timer
+        }
+
+        debounceTimer.current = setTimeout(() => {
+            checkUsernameUnique(value) // Call the API after 300ms
+        }, 300)
+    }
 
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         setIsSubmitting(true)
@@ -100,7 +109,7 @@ const SignUpForm = () => {
                                 <FormItem>
                                     <FormLabel>Username</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="username" {...field} onChange={(e) => { field.onChange(e); debounced(e.target.value) }} />
+                                        <Input placeholder="username" {...field} onChange={(e) => { field.onChange(e); handleUsernameChange(e.target.value) }} />
                                     </FormControl>
                                     <p className={`text-sm ${usernameMessage === "Username is available" ? 'text-green-500' : 'text-red-500'}`} > {isCheckingUsername && <Loader2 className="animate-spin" />} {usernameMessage}</p>
                                     <FormMessage />
