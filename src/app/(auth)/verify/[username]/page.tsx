@@ -32,7 +32,7 @@ const VerifyAccount = () => {
                 title: "Success",
                 description: response?.data?.message
             })
-            router.replace('sign-in')
+            router.push('/sign-in')
         } catch (error) {
 
         }
