@@ -1,6 +1,7 @@
 import { resend } from "@/lib/resend";
 import VerificationEmail from "../../emails/VerficationEmail";
 import { ApiResponse } from "@/types/ApiResponse";
+const nodemailer = require('nodemailer');
 
 // export async function sendVerificationEmail(
 //     email : string,
@@ -34,8 +35,6 @@ export async function sendVerificationEmail(
     try {
         // Ensure the email HTML is correctly rendered into a string
         //   const emailHtml = VerificationEmail({ username, otp: verifyCode })
-
-        const nodemailer = require('nodemailer');
 
         // Create an SMTP transporter
         const transporter = nodemailer.createTransport({
