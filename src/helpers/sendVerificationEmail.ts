@@ -35,24 +35,23 @@ export async function sendVerificationEmail(
         // Ensure the email HTML is correctly rendered into a string
         //   const emailHtml = VerificationEmail({ username, otp: verifyCode })
 
-        if (typeof window === 'undefined') {
-            const nodemailer = require('nodemailer');
+        const nodemailer = require('nodemailer');
 
-            // Create an SMTP transporter
-            const transporter = nodemailer.createTransport({
-                service: "gmail",
-                auth: {
-                    user: process.env.EMAIL_USER, // Replace with your Gmail address
-                    pass: process.env.EMAIL_PASS, // Replace with your app-specific password
-                },
-            });
+        // Create an SMTP transporter
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER, // Replace with your Gmail address
+                pass: process.env.EMAIL_PASS, // Replace with your app-specific password
+            },
+        });
 
-            // Define email options
-            const mailOptions = {
-                from: `${process.env.EMAIL_USER}`, // Replace with your sender email
-                to: email,
-                subject: "Verification Code",
-                html: `
+        // Define email options
+        const mailOptions = {
+            from: `${process.env.EMAIL_USER}`, // Replace with your sender email
+            to: email,
+            subject: "Verification Code",
+            html: `
             <div>
             <h2>Hello ${username},</h2>
             <p>Thank you for registering. Please use the following verification code to complete your registration:</p>
@@ -60,11 +59,10 @@ export async function sendVerificationEmail(
             <p>If you did not request this code, please ignore this email.</p>
             </div>
             `,
-            };
+        };
 
-            // Send the email
-            await transporter.sendMail(mailOptions);
-        }
+        // Send the email
+        await transporter.sendMail(mailOptions);
 
         return {
             success: true,
