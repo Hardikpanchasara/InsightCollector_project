@@ -33,24 +33,28 @@ const SignInForm = () => {
     })
 
     const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-      const response = await signIn('credentials', {
-        redirect: false,
-        identifier : data.identifier,
-        password: data.password,
-        // callbackUrl: '/dashboard'
-      })
+        setIsSubmitting(true)
 
-      if(response?.error){
-        toast({
-          title: "Login Failed",
-          description: "Incorrect username or password",
-          variant: "destructive"
+        const response = await signIn('credentials', {
+            redirect: false,
+            identifier: data.identifier,
+            password: data.password,
+            // callbackUrl: '/dashboard'
         })
-      }
 
-      if(response?.url){
-        router.replace('/dashboard')
-      }
+        setIsSubmitting(false)
+
+        if (response?.error) {
+            toast({
+                title: "Login Failed",
+                description: "Incorrect username or password",
+                variant: "destructive"
+            })
+        }
+
+        if (response?.url) {
+            router.replace('/dashboard')
+        }
     }
 
 
